@@ -475,7 +475,7 @@ const quantity_cart = async (req, res) => {
 /* -------------------------------------------------------------------------- */
 const view_checkout = async (req, res) => {
   let id = req.session.user;
-  let user=await userdb.findOne({UserId:id})
+  let user=await userdb.find({_id:id})
   if (id) {
     // console.log(id);
     const Checkout = await cart.aggregate([
@@ -542,7 +542,7 @@ const view_checkout = async (req, res) => {
       Subtotal: subtotal,
       count: Checkout.length,
       addressview: addressview,
-      user:user
+      user:user[0]
     });
     afterdiscount = false;
   } else {
@@ -559,7 +559,7 @@ const my_acc = async (req, res) => {
   }else{
 
     let addressview = await address.aggregate([
-      {
+      { 
         $match: { UserId: ObjectId(id) },
       },
       {
@@ -567,13 +567,13 @@ const my_acc = async (req, res) => {
       },
     ]);
     // console.log(addressview);
-    let userdetails = await userdb.findOne({ UserId: id });
+    let userdetails = await userdb.find({ _id: id });
     let walletview = await wallet.findOne({ UserId: id });
   
     res.render("user/myaccount", {
       addressview: addressview,
       walletview: walletview,
-      user: userdetails,
+      user: userdetails[0],
      
     });
   }
@@ -585,7 +585,7 @@ const edit_find_address = async (req, res) => {
   // console.log(req.params.id);
   let id = req.params.id;
   let userid = req.session.user;
- let user=await userdb.findOne({UserId:id})
+ let user=await userdb.find({_id:id})
   address
     .aggregate([
       { $match: { UserId: ObjectId(userid) } },
@@ -594,7 +594,7 @@ const edit_find_address = async (req, res) => {
     ])
     .then((data) => {
       // console.log(data);
-      res.render("user/editaddress", { data: data,user:user});
+      res.render("user/editaddress", { data: data,user:user[0]});
     });
 };
 /* -------------------------------------------------------------------------- */
@@ -633,8 +633,8 @@ const post_edit_address = (req, res) => {
 /* -------------------------------------------------------------------------- */
 const add_address =async (req, res) => {
   let userid=req.session.user
-  let user=await userdb.findOne({UserId:userid})
-  res.render("user/addaddress",{user:user});
+  let user=await userdb.find({_id:userid})
+  res.render("user/addaddress",{user:user[0]});
 };
 /* -------------------------------------------------------------------------- */
 /*                              ADD ADDRESS POST                              */
@@ -1012,7 +1012,7 @@ const success = (req, res) => {
 /* -------------------------------------------------------------------------- */
 const view_order = async (req, res) => {
   let userid = req.session.user;
-  let user=await userdb.findOne({UserId:userid})
+  let user=await userdb.find({_id:userid})
   let statuspendingdelete = await order.deleteMany({ Status: "Pending" });
 
   let oderdetails = await order.aggregate([
@@ -1029,7 +1029,7 @@ const view_order = async (req, res) => {
 
   // console.log(oderdetails);
 
-  res.render("user/orderview", { oderdetails: oderdetails,user:user });
+  res.render("user/orderview", { oderdetails: oderdetails,user:user[0] });
 };
 
 /* -------------------------------------------------------------------------- */
@@ -1039,7 +1039,7 @@ const orderd_product = async (req, res) => {
   let userid = req.session.user;
   let orderid = req.query.id;
   // console.log(orderid)
-  let user=await userdb.findOne({userid:userid})
+  let user=await userdb.find({_id:userid})
   let orderdetails = await order.aggregate([
     { $match: { _id: ObjectId(orderid) } },
     { $unwind: "$Product" },
@@ -1134,7 +1134,7 @@ const orderd_product = async (req, res) => {
   res.render("user/orderdproduct1", {
     addressdetails: addressdetails,
     productdetails: productdetails,
-    user:user
+    user:user[0]
   });
 };
 
@@ -1185,7 +1185,7 @@ const wish_list = async (req, res) => {
     res.redirect('/login')
   }else{
 
-    let user =await userdb.findOne({UserId:userid})
+    let user =await userdb.find({_id:userid})
     //   console.log("asdfghjk");
     // await wish.find({UserId:userid}).then((data)=>{
     //   console.log(data);
@@ -1223,7 +1223,7 @@ const wish_list = async (req, res) => {
     // console.log(wishlistdetails[0]);
     // console.log(wishlistdetails[1].name);
   
-    res.render("user/wishlist", { wishlistdetails: wishlistdetails,user:user});
+    res.render("user/wishlist", { wishlistdetails: wishlistdetails,user:user[0]});
   }
 };
 

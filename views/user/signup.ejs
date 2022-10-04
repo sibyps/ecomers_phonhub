@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>phonehub</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+     <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="User/assets/images/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="User/assets/images/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="User/assets/images/icons/favicon-16x16.png">
+  <link rel="manifest" href="User/assets/images/icons/site.html">
+  <link rel="mask-icon" href="User/assets/images/icons/safari-pinned-tab.svg" color="#666666">
+  <link rel="shortcut icon" href="User/assets/images/icons/favicon.png">
+  <meta name="apple-mobile-web-app-title" content="Molla">
+  <meta name="application-name" content="Molla">
+  <meta name="msapplication-TileColor" content="#cc9966">
+  <meta name="msapplication-config" content="User/assets/images/icons/browserconfig.xml">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="stylesheet" href="User/assets/vendor/line-awesome/line-awesome/line-awesome/css/line-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+    integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Plugins CSS File -->
+  <link rel="stylesheet" href="User/assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="User/assets/css/plugins/owl-carousel/owl.carousel.css">
+  <link rel="stylesheet" href="User/assets/css/plugins/magnific-popup/magnific-popup.css">
+  <link rel="stylesheet" href="User/assets/css/plugins/jquery.countdown.css">
+  <!-- Main CSS File -->
+  <link rel="stylesheet" href="User/assets/css/style.css">
+  <link rel="stylesheet" href="User/assets/css/skins/skin-demo-4.css">
+  <link rel="stylesheet" href="User/assets/css/demos/demo-4.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+</head>
+<body>
+<!-- ----------------------------------------------------------------------- -->
+<!--                                 HEADDER                                 -->
+<!-- ----------------------------------------------------------------------- -->
+<%- include('../partials/headerlogin.ejs') %>
+
+<!-- ----------------------------------------------------------------------- -->
+<!--                               HEADER END                                -->
+<!-- ----------------------------------------------------------------------- -->
+
+
+
+    <!-- ----------------------------------------------------------------------- -->
+    <!--                               USERSIGNUP                               -->
+    <!-- ----------------------------------------------------------------------- -->
+    <section class="pt-5 pb-5 mt-0 align-items-center d-flex bg-dark" style="min-height: 70vh; background-size: cover; background-image: url(https://images.unsplash.com/photo-1477346611705-65d1883cee1e?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=1920&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjMyMDc0fQ&amp;s=c0d43804e2c7c93143fe8ff65398c8e9);">
+        <div class="container-fluid">
+          <div class="row  justify-content-center align-items-center d-flex-row text-center h-100">
+            <div class="col-12 col-md-4 col-lg-3   h-50 ">
+              <div class="card shadow">
+                <div class="card-body mx-auto">
+                  <h4 class="card-title mt-3 text-center">Create Account</h4>
+                  
+                  <!-- <p>
+                    <a href="" class="btn btn-block btn-info">
+                      <i class="fab fa-twitter mr-2"></i>Login via Twitter</a>
+                    <a href="" class="btn btn-block btn-primary">
+                      <i class="fab fa-facebook-f mr-2"></i>Login via facebook</a>
+                  </p>
+                  <p class="text-muted font-weight-bold ">
+                    <span>OR</span>
+                  </p> -->
+                  <form name="signupform" action="/signup" method="post" >
+                    <div class="form-group input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                      </div>
+                      <input name="firstname" class="form-control" placeholder="First name" type="text" onkeyup="nameval()">
+                    </div>
+                    <div class="form-group input-group">
+                      <span class="text-primary" id="1sterror"></span>
+                    </div>
+                   
+                    <div class="form-group input-group">
+                      <span class="text-primary" id="2nderror"></span>
+                    </div>
+                    <div class="form-group input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                      </div>
+                      <input name="mobile" class="form-control" placeholder="mobile" type="text" onkeyup="mobileval() ">
+                    </div>
+                    <div class="form-group input-group">
+                      <span class="text-primary" id="mobileerror"></span>
+                    </div>
+                    <div class="form-group input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                      </div>
+                      <input name="email" class="form-control" placeholder="Email address" type="email" onkeyup="emailval()">
+                    </div>
+                    <div class="form-group input-group">
+                      <span class="text-primary" id="emailerror"></span>
+                    </div>
+                    <div class="form-group input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                      </div>
+                      <input name="password" class="form-control" placeholder="Create password" type="password" onkeyup=" passwordvali()">
+                    </div>
+                    <div class="form-group input-group">
+                      <span class="text-primary" id="error"></span>
+                    </div>
+                    <!-- <div class="form-group input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                      </div>
+                      <input class="form-control" placeholder="Repeat password" type="password">
+                    </div> -->
+                    <div class="form-group">
+                      <% if (signupError) { %>
+                        <p class="error text-danger"><%= signupError %> </p>
+                        <% } %>
+                        
+  
+                      <button onsubmit="return forms() " type="submit" class="btn btn-primary btn-block"> Create Account </button>
+                    </div>
+                    <p class="text-center">Have an account?
+                      <a href="/login">Log In</a>
+                    </p>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+     </section>
+<!-- ----------------------------------------------------------------------- -->
+<!--                                SIGN UP END                                -->
+<!-- ----------------------------------------------------------------------- -->
+
+<!-- ----------------------------------------------------------------------- -->
+<!--                              FOOTER STARTS                              -->
+<!-- ----------------------------------------------------------------------- -->
+<%- include('../partials/footer.ejs') %>
+<!-- ----------------------------------------------------------------------- -->
+<!--                               FOOTER END                                -->
+<!-- ----------------------------------------------------------------------- -->
+
+
+     <script src="jhttps://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+     
+  <!-- Plugins JS File -->
+  <script src="User/assets/js/jquery.min.js"></script>
+  <script src="User/assets/js/bootstrap.bundle.min.js"></script>
+  <script src="User/assets/js/jquery.hoverIntent.min.js"></script>
+  <script src="User/assets/js/jquery.waypoints.min.js"></script>
+  <script src="User/assets/js/superfish.min.js"></script>
+  <script src="User/assets/js/owl.carousel.min.js"></script>
+  <script src="jhttps://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="User/assets/js/main.js"></script>
+  <!-- <script src="User/validation.js"></script> -->
+  <script src="User/validation.js"></script>
+
+
+</body>
+</html>

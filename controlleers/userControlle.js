@@ -554,24 +554,29 @@ const view_checkout = async (req, res) => {
 /* -------------------------------------------------------------------------- */
 const my_acc = async (req, res) => {
   id = req.session.user;
-  let addressview = await address.aggregate([
-    {
-      $match: { UserId: ObjectId(id) },
-    },
-    {
-      $unwind: "$address",
-    },
-  ]);
-  // console.log(addressview);
-  let userdetails = await userdb.findOne({ UserId: id });
-  let walletview = await wallet.findOne({ UserId: id });
+  if(id==null){
+    res.redirect('/login')
+  }else{
 
-  res.render("user/myaccount", {
-    addressview: addressview,
-    walletview: walletview,
-    user: userdetails,
-   
-  });
+    let addressview = await address.aggregate([
+      {
+        $match: { UserId: ObjectId(id) },
+      },
+      {
+        $unwind: "$address",
+      },
+    ]);
+    // console.log(addressview);
+    let userdetails = await userdb.findOne({ UserId: id });
+    let walletview = await wallet.findOne({ UserId: id });
+  
+    res.render("user/myaccount", {
+      addressview: addressview,
+      walletview: walletview,
+      user: userdetails,
+     
+    });
+  }
 };
 /* -------------------------------------------------------------------------- */
 /*                        FIND VIEW ADD EDIT   ADDRESS                        */
@@ -1176,45 +1181,50 @@ const order_status = async (req, res) => {
 /* -------------------------------------------------------------------------- */
 const wish_list = async (req, res) => {
   let userid = req.session.user;
-  let user =await userdb.findOne({UserId:userid})
-  //   console.log("asdfghjk");
-  // await wish.find({UserId:userid}).then((data)=>{
-  //   console.log(data);
-  // })
-  // console.log("asdfghnj,.");
-  let wishlistdetails = await wish.aggregate([
-    { $match: { UserId: ObjectId(userid) } },
-    { $unwind: "$Wishlist" },
-    {
-      $project: {
-        proid: "$Wishlist.proid",
-        _id: "$Wishlist._id",
-        _id: 0,
-      },
-    },
-    {
-      $lookup: {
-        from: "products",
-        localField: "proid",
-        foreignField: "_id",
-        as: "product",
-      },
-    },
-    { $unwind: "$product" },
-    {
-      $project: {
-        name: "$product.productname",
-        price: "$product.price",
-        Description: "$product.Description",
-        image: "$product.image",
-        _id: "$product._id",
-      },
-    },
-  ]);
-  // console.log(wishlistdetails[0]);
-  // console.log(wishlistdetails[1].name);
+  if(userid==null){
+    res.redirect('/login')
+  }else{
 
-  res.render("user/wishlist", { wishlistdetails: wishlistdetails,user:user});
+    let user =await userdb.findOne({UserId:userid})
+    //   console.log("asdfghjk");
+    // await wish.find({UserId:userid}).then((data)=>{
+    //   console.log(data);
+    // })
+    // console.log("asdfghnj,.");
+    let wishlistdetails = await wish.aggregate([
+      { $match: { UserId: ObjectId(userid) } },
+      { $unwind: "$Wishlist" },
+      {
+        $project: {
+          proid: "$Wishlist.proid",
+          _id: "$Wishlist._id",
+          _id: 0,
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "proid",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
+      { $unwind: "$product" },
+      {
+        $project: {
+          name: "$product.productname",
+          price: "$product.price",
+          Description: "$product.Description",
+          image: "$product.image",
+          _id: "$product._id",
+        },
+      },
+    ]);
+    // console.log(wishlistdetails[0]);
+    // console.log(wishlistdetails[1].name);
+  
+    res.render("user/wishlist", { wishlistdetails: wishlistdetails,user:user});
+  }
 };
 
 /* -------------------------------------------------------------------------- */

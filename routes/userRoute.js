@@ -6,7 +6,7 @@ const controller =require("../controlleers/userControlle")
 
 
 /* -------------------------------- USER HOME ------------------------------- */
-route.get('/home',controller.home)
+route.get('/',controller.home)
 
 /* ------------------------------- USER LOGIN ------------------------------- */
 route.get('/login',controller.login)

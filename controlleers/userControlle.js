@@ -90,7 +90,7 @@ const signup = (req, res) => {
                   Balance: bounus,
                 });
                 walletschema.save();
-                res.redirect("/home");
+                res.redirect("/");
                 // console.log(data);
               })
               .catch((err) => {
@@ -133,7 +133,7 @@ const signin = (req, res) => {
             if (result) {
               req.session.user = user._id;
 
-              res.redirect("/home");
+              res.redirect("/");
             } else {
               req.session.logginError = "invalid email or password";
               res.redirect("/login");
@@ -220,7 +220,7 @@ const otp_Verify = async (req, res, next) => {
 
     if (response.status == "approved") {
       req.session.user = user._id;
-      res.redirect("/home");
+      res.redirect("/");
     } else {
       res.render("user/otp_verify");
     }
@@ -230,7 +230,7 @@ const otp_Verify = async (req, res, next) => {
 /* ------------------------------- USER LOGOUT ------------------------------ */
 const user_logout = (req, res) => {
   req.session.user = null;
-  res.redirect("/home");
+  res.redirect("/");
 };
 /* ------------------------------ PRODUCT LIST ------------------------------ */
 const product_list = async (req, res) => {
@@ -338,7 +338,7 @@ const cart_post = async (req, res) => {
   //         if (response) {
   //           console.log("world");
   //           console.log(response);
-  //           res.redirect("/home");
+  //           res.redirect("/");
   //         }
   //       });
 

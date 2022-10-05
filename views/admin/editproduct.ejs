@@ -12,6 +12,7 @@
   <link href="/Admin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="/Admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
   <link href="/Admin/css/ruang-admin.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
 <body id="page-top">
@@ -330,32 +331,69 @@
                   <form action="/admin/edit_product<%= edit._id %>" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                       <label for="exampleInputEmail1">Product Name</label>
-                      
-                      <input type="text" class="form-control" id="product_name" name="productname"  value="<%= edit.productname %> " >
+                      <input type="text" class="form-control" id="product_name" value="<%= edit.productname %>" name="productname"
+                        placeholder="Product Name">
                      
                     </div>
                     <div class="form-group">
                       <label for="exampleInputPassword1">Price</label>
-                      <input type="text" class="form-control" id="product_price" name="price" value="<%= edit.price %> "  >
-                      
-
+                      <input type="text" class="form-control" id="product_price" value="<%= edit.price %>"name="price" placeholder="Price">
                     </div>
                     <div class="form-group">
                       <label for="exampleInputPassword1">Stock</label>
-                      <input type="text" class="form-control" id="product_stock" name="stock"  value="<%= edit.stock %> " >
+                      <input type="number" class="form-control" id="product_stock" value="<%= edit.stock %>"name="stock" placeholder="stock">
                     </div>
+                   
                     <div class="form-group">
                       <label for="exampleInputPassword1">Offer</label>
-                      <input type="text" class="form-control" id="product_offer" name="offer" value="<%= edit.offer %> "  >
+                      <input type="text" class="form-control" id="product_offer" value="<%= edit.offer %>"name="offer" placeholder="offer">
                     </div>
                     <div class="form-group">
-                      <label for="exampleInputPassword1">Description</label>
-                      <textarea type="text" class="form-control" id="product_offer" name="description" value="<%= edit.Description %> "  ></textarea>
+                      <label for="exampleInputPassword1">Colors</label>
+                      <input type="text" class="form-control" id="product_stock" value="<%= edit.colors %>"name="colors" placeholder="colors">
                     </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">OS</label>
+                      <input type="text" class="form-control" id="product_stock" value="<%= edit.os %>"name="os" placeholder="android or IOS">
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Camera</label>
+                      <input type="text" class="form-control" id="product_stock" value="<%= edit.primary %>"name="primary" placeholder="primary">
+                      <input type="text" class="form-control" id="product_stock" value="<%= edit.secondary %>"name="secondary" placeholder="secondary">
+
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Display</label>
+                      <input type="text" class="form-control" id="product_stock" value="<%= edit.size %>"name="size" placeholder="eg:6.5 inches">
+                      <input type="text" class="form-control" id="product_stock" value="<%= edit.reslution%>"name="reslution" placeholder="eg:90Hz FHD ">
+
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Storage</label>
+                      <input type="text" class="form-control" id="product_stock" value="<%= edit.ram %>"name="ram" placeholder="ram">
+                      <input type="text" class="form-control" id="product_stock" value="<%= edit.internal %>"name="internal" placeholder="internal">
+
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Battery</label>
+                      <input type="text" class="form-control" id="product_stock" value="<%= edit.mah %>"name="mah" placeholder="eg:4000mah">
+                      <input type="text" class="form-control" id="product_stock" value="<%= edit.watt %>"name="watt" placeholder="eg:33 w">
+
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">short Description</label>
+                      <input type="text" class="form-control" id="product_offer" value="<%= edit.short %>"name="short" placeholder="short Description">
+                      
+                    </div>
+                   
+                    
                     <div class="form-group">
                       <div class="custom-file">
                         <label class="custom-file-label" for="customFile">Image</label>
-                        <input type="file" class="custom-file-input" name="image" id="customFile"  value="<%= edit.image %> " multiple>
+
+                        <input type="file" class="custom-file-input" value="<%= edit.image %>"name="image" id="customFile" multiple>
+                       
+                        
                       </div>
                     </div>
                    
@@ -424,7 +462,7 @@
   <script src="/Admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="/Admin/vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="/Admin/js/ruang-admin.min.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 
 </html>

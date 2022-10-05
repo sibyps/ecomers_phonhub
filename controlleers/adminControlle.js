@@ -30,7 +30,7 @@ exports.brand_post = async (req, res) => {
   const fileName = file.map((file) => {
     return file.filename;
   });
-  console.log(fileName);
+  // console.log(fileName);
   const brands = new brand({
     brand: req.body.brand,
     image:fileName
@@ -49,18 +49,8 @@ exports.add_product = async (req, res) => {
 
 exports.post_add_product = async (req, res, next) => {
 
-  if (
-    !req.body.productname ||
-    !req.body.singlebrand ||
-    !req.body.price ||
-    !req.body.stock ||
-    !req.body.offer ||
-    !req.body.description ||
-    !req.body.short
-  ) {
-    //  console.log("not empty")
-    res.redirect("/admin//home");
-  } else {
+ const {productname,singlebrand,price,stock,offer,colors,os,primary,secondary,size,reslution,ram,internal,mah,watt,short,description}=req.body
+
     try {
       const files = req.files;
       const file = files.map((file) => {
@@ -70,13 +60,7 @@ exports.post_add_product = async (req, res, next) => {
         return file.filename;
       });
       const products = {
-        productname: req.body.productname,
-        brand: req.body.singlebrand,
-        price: req.body.price,
-        stock: req.body.stock,
-        offer: req.body.offer,
-        short: req.body.short,
-        Description: req.body.description,
+        productname,singlebrand,price,stock,offer,colors,os,primary,secondary,size,reslution,ram,internal,mah,watt,short,description,
         image: fileName,
       };
       const response = await product.create(products);
@@ -86,7 +70,7 @@ exports.post_add_product = async (req, res, next) => {
       console.log(error);
       next(error);
     }
-  }
+  
 };
 
 /* ------------------------------ USER DETAILS ------------------------------ */
@@ -123,22 +107,27 @@ exports.update_edit_product = (req, res) => {
     });
 };
 /* ------------------------------ DELET PRODUCT ----------------------------- */
-exports.delet_product = (req, res) => {
-  product.findById(req.params.id).then((result) => {
+exports.delet_product = async(req, res) => {
+  
+  await product.findById(req.params.id).then((result) => {
+  
     for (let index = 0; index < result.image.length; index++) {
       const element = result.image[index];
+   
       fs.unlink("public" + "/Products/" + element, (err) => {
         if (err) {
           console.log(err);
-        } else {
+        } 
+        else {
+
           //console.log ("deleted image of ")
         }
       });
     }
-  });
+  }); 
 
-  product
-    .findOneAndDelete(req.params._id)
+  await product
+    .deleteOne({_id:req.params.id})
     .then((result) => {
       res.redirect("/admin/list_product");
     })

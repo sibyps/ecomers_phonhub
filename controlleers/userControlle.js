@@ -353,9 +353,10 @@ const cart_post = async (req, res) => {
 
 const view_cart = async (req, res) => {
   let id = req.session.user;
-  let user = await userdb.find({_id:id})
+//  console.log(id);
   if (id) {
     // console.log(id);
+    let user = await userdb.find({_id:id})
     const CartProduct = await cart.aggregate([
       { $match: { UserId: ObjectId(id) } },
       { $unwind: "$Product" },
@@ -391,11 +392,7 @@ const view_cart = async (req, res) => {
     for (let p = 0; p < CartProduct.length; p++) {
       grandtotal =
         grandtotal +
-        (CartProduct[p].displaycart.price -
-          (CartProduct[p].displaycart.price *
-            CartProduct[p].displaycart.offer) /
-            100) *
-          CartProduct[p].Quantity;
+        (CartProduct[p].displaycart.price -(CartProduct[p].displaycart.price *CartProduct[p].displaycart.offer) / 100) *CartProduct[p].Quantity;
     }
     var subtotal = 0;
     for (let p = 0; p < CartProduct.length; p++) {

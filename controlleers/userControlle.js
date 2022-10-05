@@ -32,15 +32,15 @@ const client = require("twilio")(
 /* -------------------------------- USER HOME ------------------------------- */
 const home =async (req, res) => {
   let brands=await brand.find({})
-
+ let newarival =await product.find({})
  await userdb
     .findOne({ _id: req.session.user })
     .then((user) => {
       if (user && user.state) {
-        res.render("user/index-4", { user: user,brands:brands});
+        res.render("user/index-4", { user: user,brands:brands,newarival:newarival});
       } else {
         req.session.user = null;
-        res.render("user/index-4", { user: user,brands:brands});
+        res.render("user/index-4", { user: user,brands:brands,newarival:newarival});
       }
     })
     .catch((err) => console.log(err));
@@ -236,16 +236,16 @@ const user_logout = (req, res) => {
 const product_list = async (req, res) => {
 
 let userid=req.session.user
+let allproduct =await product.find({})
   let proname = req.query.name;
-
-  let productdetails = await product.find({ brand: proname });
+  let productdetails = await product.find({ singlebrand: proname });
   let user = await userdb.find({_id:userid})
  
-  res.render("user/category", {user:user[0], productdetails: productdetails});
+  res.render("user/category", {user:user[0], productdetails: productdetails,allproduct:allproduct});
 
   
 };
-
+ 
 /* ----------------------------- SINGLE PRODUCT ----------------------------- */
 
 const single_product =async (req, res) => {
@@ -286,8 +286,10 @@ const cart_post = async (req, res) => {
         },
       ],
     });
-    cart_schema.save();
-    res.redirect("/product_list");
+    cart_schema.save().then((result)=>{
+
+      res.redirect("/product_list");
+    })
     // console.log("new cart formmed:");
   } else {
     // Push product to cart
@@ -309,7 +311,7 @@ const cart_post = async (req, res) => {
           if (err) {
             // console.log("not added");
           } else {
-            // console.log("added");
+            res.redirect("/product_list");
           }
         }
       );

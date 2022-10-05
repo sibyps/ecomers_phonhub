@@ -81,7 +81,7 @@ exports.user_details = (req, res) => {
 };
 /* ------------------------------ PRODUCT LIST ------------------------------ */
 exports.product_list = (req, res) => {
-  product.find({}).then((products) => {
+  product.find().then((products) => {
     res.render("admin/listProduct", { products: products });
   });
 };

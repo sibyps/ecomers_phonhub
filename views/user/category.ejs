@@ -45,7 +45,9 @@
     <!--                             HEADDER STARTS                              -->
     <!-- ----------------------------------------------------------------------- -->
 
-      <%- include('../partials/header.ejs') %>
+
+  <%- include('../partials/header.ejs') %>
+
  
 
     <!-- ----------------------------------------------------------------------- -->
@@ -149,7 +151,7 @@
                       <figure class="product-media">
                         <span class="product-label label-new">New</span>
                         <a href="/single_product/<%= products._id %> " >
-                          <img src= /Products/<%= products.image[1] %>  alt="Product image" class="product-image">
+                          <img src= /Products/<%= products.image[0] %>  alt="Product image" class="product-image">
                         </a>
                       </figure><!-- End .product-media -->
                     </div><!-- End .col-sm-6 col-lg-3 -->
@@ -182,8 +184,14 @@
                         </div><!-- End .product-cat -->
                         <h3 class="product-title"><a href="product.html"><%= products.productname %> </a></h3><!-- End .product-title -->
 
-                        <div class="product-content">
-                          <p><%= products.short %>  </p>
+                        <div class="product-content" style="color: black;">
+                          <ul style="color: hwb(0 0% 100%);">
+                            <li>●<%=products.ram  %> | <%=products.internal  %></li>
+                            <li>●<%=products.size  %> </li>
+                            <li>●<%=products.os  %> </li>
+                            <li>●<%=products.mah  %> </li>
+                            <li>●<%=products.watt  %> </li>
+                          </ul>
                         </div><!-- End .product-content -->
 
 
@@ -193,7 +201,70 @@
                 </div><!-- End .product -->
                 <% }) %>
               </div><!-- End .products -->
+              <div class="products mb-3">
 
+
+                <% allproduct.forEach((products,index) => { %>
+
+
+
+
+                <div class="product product-list">
+                  <div class="row">
+                    <div class="col-6 col-lg-3">
+                      <figure class="product-media">
+                        <span class="product-label label-new">New</span>
+                        <a href="/single_product/<%= products._id %> " >
+                          <img src= /Products/<%= products.image[0] %>  alt="Product image" class="product-image">
+                        </a>
+                      </figure><!-- End .product-media -->
+                    </div><!-- End .col-sm-6 col-lg-3 -->
+
+                    <div class="col-6 col-lg-3 order-lg-last">
+                      <div class="product-list-action">
+                        <div class="product-price d-flex flex-column">
+                          <p><del>₹<%= products. price %> </del></p>
+                          ₹<%=(products. price-(products. price*products.offer/100)).toFixed(2)%> 
+                         
+                             <p>you saved <%= products.offer%>%</p> 
+                        
+                        </div><!-- End .product-price -->
+                        <div class="ratings-container">
+                          <div class="ratings">
+                            <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
+                          </div><!-- End .ratings -->
+                          <span class="ratings-text">( 2 Reviews )</span>
+                        </div><!-- End .rating-container -->
+                        <a href="/cart_post/<%= products._id %> " class="btn-product btn-cart"><span>add to cart</span></a>
+                      </div><!-- End .product-list-action -->
+                    </div><!-- End .col-sm-6 col-lg-3 -->
+
+                    <div class="col-lg-6">
+                      <div class="product-body product-action-inner">
+                      
+                        <button class="btn-product btn-wishlist border-0" onclick="wishlist('<%= products._id %>')"  title="Add to wishlist"><span>add to wishlist</span></button>
+                        <div class="product-cat">
+                          <a href="#"></a>
+                        </div><!-- End .product-cat -->
+                        <h3 class="product-title"><a href="product.html"><%= products.productname %> </a></h3><!-- End .product-title -->
+
+                        <div class="product-content" style="color: black;">
+                          <ul style="color: hwb(0 0% 100%);">
+                            <li>●<%=products.ram  %> | <%=products.internal  %></li>
+                            <li>●<%=products.size  %> </li>
+                            <li>●<%=products.os  %> </li>
+                            <li>●<%=products.mah  %> </li>
+                            <li>●<%=products.watt  %> </li>
+                          </ul>
+                        </div><!-- End .product-content -->
+
+
+                      </div><!-- End .product-body -->
+                    </div><!-- End .col-lg-6 -->
+                  </div><!-- End .row -->
+                </div><!-- End .product -->
+                <% }) %>
+              </div><!-- End .products -->
               <!-- ----------------------------------------------------------------------- -->
               <!--                             PRODUCT ENDING                              -->
               <!-- ----------------------------------------------------------------------- -->

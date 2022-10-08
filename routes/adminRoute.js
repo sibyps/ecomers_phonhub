@@ -63,6 +63,8 @@ route.get("/coupon",controller.coupon)
 route.post("/add_coupon",controller.add_coupon)
 /* ---------------------------------- CHART --------------------------------- */
 route.post("/chart",controller.chart)
+/* ---------------------------- SINGLE ORDER VIEW --------------------------- */
+route.get("/single_order",controller.single_order)
 /* --------------------------------- BANNER --------------------------------- */
 route.get("/banner",controller.banner)
 route.post("/banner_post",upload.array('image'),controller.banner_post)

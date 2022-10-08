@@ -453,6 +453,34 @@ const bannerschema=new banner({
 await bannerschema.save()
  res.redirect('/admin/banner')
 }
+/* ---------------------------- SINGLE ORDER VIEW --------------------------- */
+exports.single_order=async(req,res)=>{
+  const orderid=req.query
+  let singlorder=await order.aggregate([
+   {$match:{_id:ObjectId(orderid)}},
+   {$unwind:"$Product"},
+   {$project:{
+   proid:"$Product.ItemId",
+   _id:0,
+   Quantity:"$Product.Quantity",
+   }
+    },
+   {$lookup:{
+    from:"products",
+    localField:"proid",
+    foreignField:"_id",
+    as:"product"
+   }},
+   {
+    $project:{
+      Quantity:1,
+      product: { $arrayElemAt: ["$product", 0] }
+    }
+   }
+    
+  ])
+  res.render('admin/singleorder',{singlorder:singlorder})
+}
 /* --------------------------------- LOG OUT -------------------------------- */
 exports.log_out = (req, res) => {
   req.session.adminid = false;

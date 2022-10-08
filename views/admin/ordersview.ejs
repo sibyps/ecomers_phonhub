@@ -25,7 +25,7 @@
     <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/admin/home">
         <div class="sidebar-brand-icon">
-          <img src="img/logo/phonehub.jpg">
+          <img src="User/assets/images/logos/phonehub.jpg">
         </div>
         <div class="sidebar-brand-text mx-3"></div>
       </a>
@@ -327,6 +327,7 @@
                         <th>Total</th>
                         <th>Status</th>
                         <th>Action</th>
+                        <th>View</th>
                       </tr>
                     </thead>
                     <tfoot>
@@ -338,6 +339,7 @@
                         <th>Total</th>
                         <th>Status</th>
                         <th>Action</th>
+                        <th>View</th>
                       </tr>
                     </tfoot>
                     <tbody>
@@ -352,6 +354,7 @@
                             <td><%= adrs.Date.toLocaleDateString() %></td>
                             <td>₹ <%= adrs.Total %> </td>
                             <td><%= adrs.Status %></td>
+                            
                             <form action="#">
                             <td><div class="btn-group">
                               <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -367,6 +370,7 @@
                               </ul>
                             
                             </div></td>
+                            <td><a href="/admin/single_order?id=<%= adrs._id %>">View</a></td>
                           </form>
         
                         </tr>

@@ -26,9 +26,9 @@ route.get('/logout',controller.user_logout)
 route.get('/product_list',controller.product_list)
 
 /* ----------------------------- SINGLE PRODUCT ----------------------------- */
-route.get('/single_product/:id',controller.single_product)
+route.get('/single_product',controller.single_product)
 /* ---------------------------------- CART ---------------------------------- */
-route.get('/cart_post/:id',controller.cart_post)
+route.post('/cart_post',controller.cart_post)
 route.get('/view_cart',controller.view_cart)
 route.get('/remove_cart:id',controller.remove_cart)
 route.post('/quantity_cart',controller.quantity_cart)
@@ -53,6 +53,7 @@ route.get('/order_status',controller.order_status)
 /* -------------------------------- WISHLIST -------------------------------- */
 route.get('/wish_list',controller.wish_list)
 route.post('/wish_list_post',controller.wish_list_post)
+route.delete('/remove_wishlist',controller.remove_wishlist)
 /* --------------------------------- COUPON --------------------------------- */
 route.post('/coupon',controller.post_coupon)
 /* --------------------------------- WALLET --------------------------------- */

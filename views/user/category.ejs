@@ -37,6 +37,7 @@
   <link rel="stylesheet" href="/User/assets/css/plugins/nouislider/nouislider.css">
   <link rel="stylesheet" href="/User/assets/css/skins/skin-demo-4.css">
   <link rel="stylesheet" href="/User/assets/css/demos/demo-4.css">
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -67,22 +68,10 @@
             <div class="col-lg-9">
               <div class="toolbox">
                 <div class="toolbox-left">
-                  <div class="toolbox-info">
-                    Showing <span>9 of 56</span> Products
-                  </div><!-- End .toolbox-info -->
                 </div><!-- End .toolbox-left -->
 
                 <div class="toolbox-right">
-                  <div class="toolbox-sort">
-                    <label for="sortby">Sort by:</label>
-                    <div class="select-custom">
-                      <select name="sortby" id="sortby" class="form-control">
-                        <option value="popularity" selected="selected">Most Popular</option>
-                        <option value="rating">Most Rated</option>
-                        <option value="date">Date</option>
-                      </select>
-                    </div>
-                  </div><!-- End .toolbox-sort -->
+                
                   <div class="toolbox-layout">
                     <a href="category-list.html" class="btn-layout active">
                       <svg width="16" height="10">
@@ -150,7 +139,7 @@
                     <div class="col-6 col-lg-3">
                       <figure class="product-media">
                         <span class="product-label label-new">New</span>
-                        <a href="/single_product/<%= products._id %> " >
+                        <a href="/single_product?id=<%= products._id %>" >
                           <img src= /Products/<%= products.image[0] %>  alt="Product image" class="product-image">
                         </a>
                       </figure><!-- End .product-media -->
@@ -160,7 +149,7 @@
                       <div class="product-list-action">
                         <div class="product-price d-flex flex-column">
                           <p><del>₹<%= products. price %> </del></p>
-                          ₹<%=(products. price-(products. price*products.offer/100)).toFixed(2)%> 
+                          ₹<%=Math.floor((products. price-(products. price*products.offer/100))).toFixed(2)%> 
                          
                              <p>you saved <%= products.offer%>%</p> 
                         
@@ -171,7 +160,7 @@
                           </div><!-- End .ratings -->
                           <span class="ratings-text">( 2 Reviews )</span>
                         </div><!-- End .rating-container -->
-                        <a href="/cart_post/<%= products._id %> " class="btn-product btn-cart"><span>add to cart</span></a>
+                        <a href="#" class="btn-product btn-cart" onclick="addtocart('<%= products._id %>')"><span>add to cart</span></a>
                       </div><!-- End .product-list-action -->
                     </div><!-- End .col-sm-6 col-lg-3 -->
 
@@ -201,8 +190,7 @@
                 </div><!-- End .product -->
                 <% }) %>
               </div><!-- End .products -->
-              <div class="products mb-3">
-
+            <div class="products mb-3">
 
                 <% allproduct.forEach((products,index) => { %>
 
@@ -214,8 +202,8 @@
                     <div class="col-6 col-lg-3">
                       <figure class="product-media">
                         <span class="product-label label-new">New</span>
-                        <a href="/single_product/<%= products._id %> " >
-                          <img src= /Products/<%= products.image[0] %>  alt="Product image" class="product-image">
+                        <a href="/single_product?id=<%= products._id %>">
+                          <img src=/Products/<%= products.image[0] %>  alt="Product image" class="product-image">
                         </a>
                       </figure><!-- End .product-media -->
                     </div><!-- End .col-sm-6 col-lg-3 -->
@@ -224,7 +212,7 @@
                       <div class="product-list-action">
                         <div class="product-price d-flex flex-column">
                           <p><del>₹<%= products. price %> </del></p>
-                          ₹<%=(products. price-(products. price*products.offer/100)).toFixed(2)%> 
+                          ₹<%=Math.floor((products. price-(products. price*products.offer/100))).toFixed(2)%> 
                          
                              <p>you saved <%= products.offer%>%</p> 
                         
@@ -235,7 +223,7 @@
                           </div><!-- End .ratings -->
                           <span class="ratings-text">( 2 Reviews )</span>
                         </div><!-- End .rating-container -->
-                        <a href="/cart_post/<%= products._id %> " class="btn-product btn-cart"><span>add to cart</span></a>
+                        <a href="#" class="btn-product btn-cart" onclick="addtocart('<%= products._id %>')" ><span>add to cart</span></a>
                       </div><!-- End .product-list-action -->
                     </div><!-- End .col-sm-6 col-lg-3 -->
 
@@ -622,7 +610,7 @@
   <script src="/User/assets/js/main.js"></script>
   <script src="/User/assets/js/demos/demo-4.js"></script>
   <script src="User/ajax.js"></script>
-</bUdy>
+</body>
 
 
 <!-- molla/category-list.html  22 Nov 2019 10:02:52 GMT -->

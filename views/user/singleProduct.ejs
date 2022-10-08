@@ -14,16 +14,16 @@
   <meta name="description" content="Molla - Bootstrap eCommerce Template">
   <meta name="author" content="p-themes">
   <!-- Favicon -->
-  <link rel="apple-touch-icon" sizes="180x180" href="/user/assets/images/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/user/assets/images/icons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/user/assets/images/icons/favicon-16x16.png">
-  <link rel="manifest" href="/user/assets/images/icons/site.html">
-  <link rel="mask-icon" href="/user/assets/images/icons/safari-pinned-tab.svg" color="#666666">
-  <link rel="shortcut icon" href="User/assets/images/icons/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/User/assets/images/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/User/assets/images/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/User/assets/images/icons/favicon-16x16.png">
+  <link rel="manifest" href="/User/assets/images/icons/site.html">
+  <link rel="mask-icon" href="/User/assets/images/icons/safari-pinned-tab.svg" color="#666666">
+  <link rel="shortcut icon" href="/User/assets/images/icons/favicon.png">
   <meta name="apple-mobile-web-app-title" content="Molla">
   <meta name="application-name" content="Molla">
   <meta name="msapplication-TileColor" content="#cc9966">
-  <meta name="msapplication-config" content="/user/assets/images/icons/browserconfig.xml">
+  <meta name="msapplication-config" content="/User/assets/images/icons/browserconfig.xml">
   <meta name="theme-color" content="#ffffff">
   
   <!-- Plugins CSS File -->
@@ -33,10 +33,12 @@
   <link rel="stylesheet" href="/User/assets/css/plugins/jquery.countdown.css">
   <!-- Main CSS File -->
   <link rel="stylesheet" href="/User/assets/css/style.css">
+  <link rel="stylesheet" href="/User/assets/css/plugins/owl-carousel/owl.carousel.css">
+  <link rel="stylesheet" href="/User/assets/css/plugins/magnific-popup/magnific-popup.css">
   <link rel="stylesheet" href="/User/assets/css/plugins/nouislider/nouislider.css">
   <link rel="stylesheet" href="/User/assets/css/skins/skin-demo-4.css">
   <link rel="stylesheet" href="/User/assets/css/demos/demo-4.css">
-
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -61,17 +63,7 @@
         <div class="container d-flex align-items-center">
           
 
-          <nav class="product-pager ml-auto" aria-label="Product">
-            <a class="product-pager-link product-pager-prev" href="#" aria-label="Previous" tabindex="-1">
-              <i class="icon-angle-left"></i>
-              <span>Prev</span>
-            </a>
-
-            <a class="product-pager-link product-pager-next" href="#" aria-label="Next" tabindex="-1">
-              <span>Next</span>
-              <i class="icon-angle-right"></i>
-            </a>
-          </nav><!-- End .pager-nav -->
+         
         </div><!-- End .container -->
       </nav><!-- End .breadcrumb-nav -->
 
@@ -128,7 +120,7 @@
 
                   <div class="product-price d-flex flex-column justify-content-start align-items-start">
                    <p><del>₹<%= allproduct. price %> </del></p> 
-                    ₹<%=(allproduct. price-(allproduct. price*allproduct.offer/100)).toFixed(2)%> 
+                    ₹<%=Math.floor((allproduct. price-(allproduct. price*allproduct.offer/100))).toFixed(2)%> 
                    
                        <p>you saved <%= allproduct.offer%>%</p> 
                   
@@ -152,10 +144,10 @@
                   </div><!-- End .details-filter-row -->
 
                   <div class="product-details-action">
-                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                    <a href="#" class="btn-product btn-cart" onclick="addtocart('<%= allproduct._id %>')"><span>add to cart</span></a>
 
                     <div class="details-action-wrapper">
-                      <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
+                      <button class="btn-product btn-wishlist border-0" onclick="wishlist('<%= allproduct._id %>')" title="Add to wishlist"><span>add to wishlist</span></button>
                     </div><!-- End .details-action-wrapper -->
                   </div><!-- End .product-details-action -->
                 </div><!-- End .product-details -->
@@ -261,71 +253,97 @@
           </div><!-- End .product-details-tab -->
 
           <% }) %>
-          <h2 class="title text-center mb-4">You May Also Like</h2><!-- End .title text-center -->
+        
+        
+      <div class="container for-you">
+        <div class="heading heading-flex mb-3">
+          <div class="heading-left">
+            <h2 class="title">You May Also Like</h2><!-- End .title -->
+          </div><!-- End .heading-left -->
 
-          <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl" data-owl-options='{
-                            "nav": false, 
-                            "dots": true,
-                            "margin": 20,
-                            "loop": false,
-                            "responsive": {
-                                "0": {
-                                    "items":1
-                                },
-                                "480": {
-                                    "items":2
-                                },
-                                "768": {
-                                    "items":3
-                                },
-                                "992": {
-                                    "items":4
-                                },
-                                "1200": {
-                                    "items":4,
-                                    "nav": true,
-                                    "dots": false
+          <div class="heading-right">
+            <a href="/product_list" class="title-link">View All Recommendadion <i class="icon-long-arrow-right"></i></a>
+          </div><!-- End .heading-right -->
+        </div><!-- End .heading -->
+        <div class="tab-content tab-content-carousel just-action-icons-sm">
+          <div class="tab-pane p-0 fade show active" id="new-all-tab" role="tabpanel" aria-labelledby="new-all-link">
+            <div class="owl-carousel owl-full carousel-equal-height carousel-with-shadow" data-toggle="owl" data-owl-options='{
+                                "nav": true, 
+                                "dots": true,
+                                "margin": 20,
+                                "loop": false,
+                                "responsive": {
+                                    "0": {
+                                        "items":2
+                                    },
+                                    "480": {
+                                        "items":2
+                                    },
+                                    "768": {
+                                        "items":3
+                                    },
+                                    "992": {
+                                        "items":4
+                                    },
+                                    "1200": {
+                                        "items":5
+                                    }
                                 }
-                            }
-                        }'>
+                            }'>
 
 
-            <div class="product product-7 text-center">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img src="/User/assets/images/products/product-10.jpg" alt="Product image" class="product-image">
-                </a>
-
-                <div class="product-action-vertical">
-                  <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                  <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
-                  <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
-                </div><!-- End .product-action-vertical -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                </div><!-- End .product-action -->
-              </figure><!-- End .product-media -->
-
-              <div class="product-body">
-                <div class="product-cat">
-                  <a href="#">Jumpers</a>
-                </div><!-- End .product-cat -->
-                <h3 class="product-title"><a href="product.html">Yellow button front tea top</a></h3><!-- End .product-title -->
-                <div class="product-price">
-                  $56.00
-                </div><!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
-                  </div><!-- End .ratings -->
-                  <span class="ratings-text">( 0 Reviews )</span>
-                </div><!-- End .rating-container -->
-              </div><!-- End .product-body -->
-            </div><!-- End .product -->
+              
+                            
+              <% newarival.forEach(element => { %>
 
 
-          </div><!-- End .owl-carousel -->
+              <div class="product product-2">
+                <figure class="product-media">
+
+                  <a href="/single_product?id=<%= element._id %>">
+                    <img src="/Products/<%= element.image[0] %> " alt="Product image" class="product-image">
+                  </a>
+
+                  <div class="product-action-vertical">
+
+                    <button class="btn-product btn-wishlist border-0" onclick="wishlist('<%= element._id %>')" title="Add to wishlist"><span>add to wishlist</span></button>
+                  </div><!-- End .product-action -->
+
+                  <div class="product-action">
+                    <a href="#" class="btn-product btn-cart" title="Add to cart" onclick="addtocart('<%= element._id %>')"><span>add to cart</span></a>
+
+                  </div><!-- End .product-action -->
+                </figure><!-- End .product-media -->
+
+                <div class="product-body">
+                  <div class="product-cat">
+                    <a href="#"></a>
+                  </div><!-- End .product-cat -->
+                  <h3 class="product-title"><a href="product.html"><%= element.productname %> </a></h3><!-- End .product-title -->
+                  <div class="product-price">
+                    <%= element.price %>
+                  </div><!-- End .product-price -->
+                  <div class="ratings-container">
+                    <div class="ratings">
+                      <div class="ratings-val" style="width: 100%;"></div><!-- End .ratings-val -->
+                    </div><!-- End .ratings -->
+                    <span class="ratings-text">( 4 Reviews )</span>
+                  </div><!-- End .rating-container -->
+                </div><!-- End .product-body -->
+              </div><!-- End .product -->
+
+
+              <% }) %>
+
+
+
+
+
+            </div><!-- End .owl-carousel -->
+          </div><!-- .End .tab-pane -->
+
+        </div><!-- End .tab-content -->
+      </div><!-- End .container -->
         </div><!-- End .container -->
       </div><!-- End .page-content -->
     </main><!-- End .main -->
@@ -652,6 +670,7 @@
   <!-- Main JS File -->
   <script src="/User/assets/js/main.js"></script>
   <script src="/User/assets/js/demos/demo-4.js"></script>
+  <script src="/User/ajax.js"></script>
 </body>
 
 

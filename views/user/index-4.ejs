@@ -34,6 +34,7 @@
   <link rel="stylesheet" href="User/assets/css/style.css">
   <link rel="stylesheet" href="User/assets/css/skins/skin-demo-4.css">
   <link rel="stylesheet" href="User/assets/css/demos/demo-4.css">
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -69,7 +70,11 @@
                             }
                         }
                     }'>
-          <div class="intro-slide" style="background-image: url(User/assets/images/mobiles/redmi\ slide.jpg);">
+                    
+                    <% carosal.forEach(element => { %>
+                     
+                   
+          <div class="intro-slide" style="background-image:url('Products/<%= element.image[0] %>');">
             <div class="container intro-content">
               <div class="row justify-content-end">
                 <div class="col-auto col-sm-7 col-md-6 col-lg-5">
@@ -92,29 +97,8 @@
               </div><!-- End .row -->
             </div><!-- End .intro-content -->
           </div><!-- End .intro-slide -->
-
-          <div class="intro-slide" style="background-image: url(User/assets/images/mobiles/onepluse.jpg);">
-            <div class="container intro-content">
-              <div class="row justify-content-end">
-                <div class="col-auto col-sm-7 col-md-6 col-lg-5">
-                  <h3 class="intro-subtitle text-primary"></h3><!-- End .h3 intro-subtitle -->
-                  <h1 class="intro-title"><br></h1><!-- End .intro-title -->
-
-                  <div class="intro-price">
-                    <sup></sup>
-                    <span class="text-primary">
-                      <sup></sup>
-                    </span>
-                  </div><!-- End .intro-price -->
-
-                  <a href="category.html">
-                    <span></span>
-                    <!-- <i class="icon-long-arrow-right"></i> -->
-                  </a>
-                </div><!-- End .col-md-6 offset-md-6 -->
-              </div><!-- End .row -->
-            </div><!-- End .intro-content -->
-          </div><!-- End .intro-slide -->
+          <% }) %>
+        
         </div><!-- End .intro-slider owl-carousel owl-simple -->
 
         <span class="slider-loader"></span><!-- End .slider-loader -->
@@ -129,7 +113,7 @@
       <!-- ----------------------------------------------------------------------- -->
       <!--                             CATTOGRY STARTS                             -->
       <!-- ----------------------------------------------------------------------- -->
-      <div class="container ">
+      <div class="container">
 
 
         <div class="cat-blocks-container ">
@@ -241,7 +225,7 @@
               <div class="product product-2">
                 <figure class="product-media">
 
-                  <a href="/single_product/<%= element._id %>">
+                  <a href="/single_product?id=<%= element._id %>">
                     <img src="/Products/<%= element.image[1] %> " alt="Product image" class="product-image">
                   </a>
 
@@ -251,7 +235,7 @@
                   </div><!-- End .product-action -->
 
                   <div class="product-action">
-                    <a href="/cart_post/<%= element._id %> " class="btn-product btn-cart" title="Add to cart"><span>add to cart</span></a>
+                    <a href="#" class="btn-product btn-cart" title="Add to cart" onclick="addtocart('<%= element._id %>')"><span>add to cart</span></a>
 
                   </div><!-- End .product-action -->
                 </figure><!-- End .product-media -->
@@ -352,7 +336,7 @@
               <div class="product product-2">
                 <figure class="product-media">
 
-                  <a href="/single_product/<%= element._id %>">
+                  <a href="/single_product?id=<%= element._id %>">
                     <img src="/Products/<%= element.image[0] %> " alt="Product image" class="product-image">
                   </a>
 
@@ -362,7 +346,7 @@
                   </div><!-- End .product-action -->
 
                   <div class="product-action">
-                    <a href="/cart_post/<%= element._id %> " class="btn-product btn-cart" title="Add to cart"><span>add to cart</span></a>
+                    <a href="#" class="btn-product btn-cart" title="Add to cart" onclick="addtocart('<%= element._id %>')"><span>add to cart</span></a>
 
                   </div><!-- End .product-action -->
                 </figure><!-- End .product-media -->

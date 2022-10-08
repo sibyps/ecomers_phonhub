@@ -5,6 +5,7 @@ let order = require("../model/order");
 let cart = require("../model/cart");
 let coupon = require("../model/coupon");
 let brand = require("../model/brand");
+let banner = require("../model/banner");
 let wish = require("../model/wishlist");
 let wallet = require("../model/wallet");
 const bcrypt = require("bcrypt");
@@ -12,6 +13,9 @@ let ObjectId = require("mongodb").ObjectId;
 const paypal = require("paypal-rest-sdk");
 const Razorpay = require("razorpay");
 const { CallContext } = require("twilio/lib/rest/api/v2010/account/call");
+const {
+  BrandsInformationPage,
+} = require("twilio/lib/rest/preview/trusted_comms/brandsInformation");
 paypal.configure({
   mode: "sandbox", //sandbox or live
   client_id:
@@ -30,17 +34,28 @@ const client = require("twilio")(
 );
 
 /* -------------------------------- USER HOME ------------------------------- */
-const home =async (req, res) => {
-  let brands=await brand.find({})
- let newarival =await product.find({})
- await userdb
+const home = async (req, res) => {
+  let brands = await brand.find({});
+  let newarival = await product.find({});
+  let carosal = await banner.find({});
+  await userdb
     .findOne({ _id: req.session.user })
     .then((user) => {
       if (user && user.state) {
-        res.render("user/index-4", { user: user,brands:brands,newarival:newarival});
+        res.render("user/index-4", {
+          user: user,
+          brands: brands,
+          newarival: newarival,
+          carosal: carosal,
+        });
       } else {
         req.session.user = null;
-        res.render("user/index-4", { user: user,brands:brands,newarival:newarival});
+        res.render("user/index-4", {
+          user: user,
+          brands: brands,
+          newarival: newarival,
+          carosal: carosal,
+        });
       }
     })
     .catch((err) => console.log(err));
@@ -234,29 +249,35 @@ const user_logout = (req, res) => {
 };
 /* ------------------------------ PRODUCT LIST ------------------------------ */
 const product_list = async (req, res) => {
-
-let userid=req.session.user
-let allproduct =await product.find({})
+  let userid = req.session.user;
+  let allproduct = await product.find({});
   let proname = req.query.name;
   let productdetails = await product.find({ singlebrand: proname });
-  let user = await userdb.find({_id:userid})
- 
-  res.render("user/category", {user:user[0], productdetails: productdetails,allproduct:allproduct});
+  let user = await userdb.find({ _id: userid });
 
-  
+  res.render("user/category", {
+    user: user[0],
+    productdetails: productdetails,
+    allproduct: allproduct,
+  });
 };
- 
+
 /* ----------------------------- SINGLE PRODUCT ----------------------------- */
 
-const single_product =async (req, res) => {
+const single_product = async (req, res) => {
   // console.log(typeof req.params.id);
-  let userid=req.session.user
-  let user = await userdb.find({_id:userid})
+  let userid = req.session.user;
+  let user = await userdb.find({ _id: userid });
+  let newarival = await product.find({});
   product
-    .find({ _id: req.params.id })
+    .find({ _id: req.query.id })
     .then((result) => {
       if (result) {
-        res.render("user/singleProduct", {user:user[0], Result: result });
+        res.render("user/singleProduct", {
+          user: user[0],
+          Result: result,
+          newarival: newarival,
+        });
       } else {
       }
     })
@@ -271,51 +292,45 @@ const single_product =async (req, res) => {
 
 const cart_post = async (req, res) => {
   let id = req.session.user;
-  // console.log("logging  id");
-  // console.log(req.params.id);
+  let proid = req.body.proid;
   let cartpresent = await cart.find({ UserId: id });
 
-  if (cartpresent == "") {
-    //creat cart and store userid in cart
-    const cart_schema = new cart({
-      UserId: id,
-      Product: [
-        {
-          ItemId: req.params.id,
-          Quantity: 1,
-        },
-      ],
-    });
-    cart_schema.save().then((result)=>{
-
-      res.redirect("/product_list");
-    })
-    // console.log("new cart formmed:");
-  } else {
-    // Push product to cart
-    const data = await cart.findOne({
-      $and: [
-        { UserId: id },
-        { Product: { $elemMatch: { ItemId: req.params.id } } },
-      ],
-    });
-    if (data) {
-      res.redirect("/view_cart");
-      // console.log("exist");
+  if (id) {
+    if (cartpresent == "") {
+      const cart_schema = new cart({
+        UserId: id,
+        Product: [
+          {
+            ItemId: proid,
+            Quantity: 1,
+          },
+        ],
+      });
+      cart_schema.save().then((result) => {
+        res.json({ result: true });
+      });
     } else {
-      // console.log("push to cart");
-      cart.updateOne(
-        { UserId: id },
-        { $push: { Product: { ItemId: req.params.id, Quantity: 1 } } },
-        (err, up) => {
-          if (err) {
-            // console.log("not added");
-          } else {
-            res.redirect("/product_list");
-          }
-        }
-      );
+      // Push product to cart
+      const data = await cart.findOne({
+        $and: [{ UserId: id }, { Product: { $elemMatch: { ItemId: proid } } }],
+      });
+      if (data) {
+        res.json({ data });
+      } else {
+        // console.log("push to cart");
+        cart
+          .updateOne(
+            { UserId: id },
+            { $push: { Product: { ItemId: proid, Quantity: 1 } } }
+          )
+          .then((push) => {
+            res.json({ push });
+          });
+      }
     }
+  } else {
+   
+    res.json({ nouser: "nocart" });
   }
 
   // res.redirect('/cart')
@@ -355,10 +370,10 @@ const cart_post = async (req, res) => {
 
 const view_cart = async (req, res) => {
   let id = req.session.user;
-//  console.log(id);
+  //  console.log(id);
   if (id) {
     // console.log(id);
-    let user = await userdb.find({_id:id})
+    let user = await userdb.find({ _id: id });
     const CartProduct = await cart.aggregate([
       { $match: { UserId: ObjectId(id) } },
       { $unwind: "$Product" },
@@ -394,7 +409,11 @@ const view_cart = async (req, res) => {
     for (let p = 0; p < CartProduct.length; p++) {
       grandtotal =
         grandtotal +
-        (CartProduct[p].displaycart.price -(CartProduct[p].displaycart.price *CartProduct[p].displaycart.offer) / 100) *CartProduct[p].Quantity;
+        (CartProduct[p].displaycart.price -
+          (CartProduct[p].displaycart.price *
+            CartProduct[p].displaycart.offer) /
+            100) *
+          CartProduct[p].Quantity;
     }
     var subtotal = 0;
     for (let p = 0; p < CartProduct.length; p++) {
@@ -414,7 +433,7 @@ const view_cart = async (req, res) => {
       subtotal: subtotal,
       grandtotal: grandtotal,
       userid: id,
-      user:user[0],
+      user: user[0],
       count: CartProduct.length,
       checkout: CartProduct,
     });
@@ -474,7 +493,7 @@ const quantity_cart = async (req, res) => {
 /* -------------------------------------------------------------------------- */
 const view_checkout = async (req, res) => {
   let id = req.session.user;
-  let user=await userdb.find({_id:id})
+  let user = await userdb.find({ _id: id });
   if (id) {
     // console.log(id);
     const Checkout = await cart.aggregate([
@@ -541,7 +560,7 @@ const view_checkout = async (req, res) => {
       Subtotal: subtotal,
       count: Checkout.length,
       addressview: addressview,
-      user:user[0]
+      user: user[0],
     });
     afterdiscount = false;
   } else {
@@ -553,12 +572,11 @@ const view_checkout = async (req, res) => {
 /* -------------------------------------------------------------------------- */
 const my_acc = async (req, res) => {
   id = req.session.user;
-  if(id==null){
-    res.redirect('/login')
-  }else{
-
+  if (id == null) {
+    res.redirect("/login");
+  } else {
     let addressview = await address.aggregate([
-      { 
+      {
         $match: { UserId: ObjectId(id) },
       },
       {
@@ -568,12 +586,11 @@ const my_acc = async (req, res) => {
     // console.log(addressview);
     let userdetails = await userdb.find({ _id: id });
     let walletview = await wallet.findOne({ UserId: id });
-  
+
     res.render("user/myaccount", {
       addressview: addressview,
       walletview: walletview,
       user: userdetails[0],
-     
     });
   }
 };
@@ -584,7 +601,7 @@ const edit_find_address = async (req, res) => {
   // console.log(req.params.id);
   let id = req.params.id;
   let userid = req.session.user;
- let user=await userdb.find({_id:id})
+  let user = await userdb.find({ _id: id });
   address
     .aggregate([
       { $match: { UserId: ObjectId(userid) } },
@@ -593,7 +610,7 @@ const edit_find_address = async (req, res) => {
     ])
     .then((data) => {
       // console.log(data);
-      res.render("user/editaddress", { data: data,user:user[0]});
+      res.render("user/editaddress", { data: data, user: user[0] });
     });
 };
 /* -------------------------------------------------------------------------- */
@@ -630,10 +647,10 @@ const post_edit_address = (req, res) => {
 /* -------------------------------------------------------------------------- */
 /*                               VIEW ADD ADRESS                              */
 /* -------------------------------------------------------------------------- */
-const add_address =async (req, res) => {
-  let userid=req.session.user
-  let user=await userdb.find({_id:userid})
-  res.render("user/addaddress",{user:user[0]});
+const add_address = async (req, res) => {
+  let userid = req.session.user;
+  let user = await userdb.find({ _id: userid });
+  res.render("user/addaddress", { user: user[0] });
 };
 /* -------------------------------------------------------------------------- */
 /*                              ADD ADDRESS POST                              */
@@ -718,23 +735,21 @@ const delete_address = (req, res) => {
 const post_coupon = async (req, res) => {
   let userid = req.session.user;
   const { couponcode, total } = req.body;
-
-  // console.log(req.body);
   let coupondetails = await coupon.find({ couponcode: couponcode });
   if (coupondetails == "") {
-    // console.log("null");
     res.json({ nocupon: true });
   } else {
     let curentdate = new Date().toLocaleDateString("en-IN");
     let expire = coupondetails[0].expire;
 
-    if (curentdate <= expire) {
+    if (curentdate >= expire) {
       // console.log("not expired");
       if (total >= coupondetails[0].min && total <= coupondetails[0].max) {
         // console.log("amount ok");
         // console.log(total);
         let afterdiscount = total - (total * coupondetails[0].discount) / 100;
-        res.json({ afterdiscount });
+        let coupondiscount = coupondetails[0].discount;
+        res.json({ afterdiscount, coupondiscount, total });
         // req.session.afterdiscount=afterdiscount
         // console.log(req.session.afterdiscount);
       } else {
@@ -865,7 +880,7 @@ const orders = async (req, res) => {
       Name: addresname,
       Singleaddress: singleaddress,
       Status: "Pending",
-      Payment: req.body.payment, 
+      Payment: req.body.payment,
       Date: new Date(),
       Product: cartdetails,
       Total: total,
@@ -873,66 +888,65 @@ const orders = async (req, res) => {
     orderSchema.save().then((data) => {
       let uniqueorderid = data._id;
 
-    const create_payment_json = {
-      intent: "sale",
-      payer: {
-        payment_method: "paypal",
-      },
-      redirect_urls: {
-        return_url: "http://localhost:3000/paypal_verify_payment?orderid="+uniqueorderid,
-        cancel_url: "http://localhost:3000/cancel",
-      },
-      transactions: [
-        {
-          item_list: {
-            items: [
-              {
-                name: "Red Sox Hat",
-                sku: "001",
-                price: "10.00",
-                currency: "USD",
-                quantity: 1,
-              },
-            ],
-          },
-          amount: {
-            currency: "USD",
-            total: "10.00",
-          },
-          description: "Hat for the best team ever",
+      const create_payment_json = {
+        intent: "sale",
+        payer: {
+          payment_method: "paypal",
         },
-      ],
-    };
+        redirect_urls: {
+          return_url:
+            "http://phonhub.tk/paypal_verify_payment?orderid=" + uniqueorderid,
+          cancel_url: "http://phonhub.tk/cancel",
+        },
+        transactions: [
+          {
+            item_list: {
+              items: [
+                {
+                  name: "Red Sox Hat",
+                  sku: "001",
+                  price: "10.00",
+                  currency: "USD",
+                  quantity: 1,
+                },
+              ],
+            },
+            amount: {
+              currency: "USD",
+              total: "10.00",
+            },
+            description: "Hat for the best team ever",
+          },
+        ],
+      };
 
-    paypal.payment.create(create_payment_json, function (error, payment) {
-      if (error) {
-        // console.log(error.response.details[0]);
+      paypal.payment.create(create_payment_json, function (error, payment) {
+        if (error) {
+          // console.log(error.response.details[0]);
 
-        throw error;
-      } else {
-        // console.log(payment);
-        for (let i = 0; i < payment.links.length; i++) {
-          if (payment.links[i].rel === "approval_url") {
-            // console.log(payment.links[i].href);
-            let link = payment.links[i].href;
-            res.json({ link, paypal: true});
+          throw error;
+        } else {
+          // console.log(payment);
+          for (let i = 0; i < payment.links.length; i++) {
+            if (payment.links[i].rel === "approval_url") {
+              // console.log(payment.links[i].href);
+              let link = payment.links[i].href;
+              res.json({ link, paypal: true });
+            }
           }
         }
-      }
+      });
     });
-    });
-
-    
   }
 };
 /* -------------------------------------------------------------------------- */
 /*                            PAYPAL VERIFY PAYMENT                           */
 /* -------------------------------------------------------------------------- */
 
-const paypal_verify_payment =async(req, res) => {
-  let userid = req.session.user
+const paypal_verify_payment = async (req, res) => {
+  let userid = req.session.user;
   // console.log("verify");
-  let orderid= req.query.orderid;
+  let orderid = req.query.orderid;
   const payerId = req.query.PayerID;
   const paymentId = req.query.paymentId;
 
@@ -951,7 +965,7 @@ const paypal_verify_payment =async(req, res) => {
   paypal.payment.execute(
     paymentId,
     execute_payment_json,
-   async function (error, payment) {
+    async function (error, payment) {
       if (error) {
         // console.log(error.response);
         throw error;
@@ -962,7 +976,7 @@ const paypal_verify_payment =async(req, res) => {
           { _id: orderid },
           { $set: { Status: "Placed" } }
         );
-       res.redirect('/success')
+        res.redirect("/success");
       }
     }
   );
@@ -1011,7 +1025,7 @@ const success = (req, res) => {
 /* -------------------------------------------------------------------------- */
 const view_order = async (req, res) => {
   let userid = req.session.user;
-  let user=await userdb.find({_id:userid})
+  let user = await userdb.find({ _id: userid });
   let statuspendingdelete = await order.deleteMany({ Status: "Pending" });
 
   let oderdetails = await order.aggregate([
@@ -1028,7 +1042,7 @@ const view_order = async (req, res) => {
 
   // console.log(oderdetails);
 
-  res.render("user/orderview", { oderdetails: oderdetails,user:user[0] });
+  res.render("user/orderview", { oderdetails: oderdetails, user: user[0] });
 };
 
 /* -------------------------------------------------------------------------- */
@@ -1038,7 +1052,7 @@ const orderd_product = async (req, res) => {
   let userid = req.session.user;
   let orderid = req.query.id;
   // console.log(orderid)
-  let user=await userdb.find({_id:userid})
+  let user = await userdb.find({ _id: userid });
   let orderdetails = await order.aggregate([
     { $match: { _id: ObjectId(orderid) } },
     { $unwind: "$Product" },
@@ -1094,7 +1108,7 @@ const orderd_product = async (req, res) => {
         ItemId: "$Product.ItemId",
       },
     },
-    {$sort:{Date:-1}},
+    { $sort: { Date: -1 } },
     {
       $lookup: {
         from: "products",
@@ -1107,7 +1121,7 @@ const orderd_product = async (req, res) => {
       $project: {
         Payment: 1,
         UserId: 1,
-        Status: 1, 
+        Status: 1,
         Address: 1,
         Date: 1,
         Quantity: 1,
@@ -1115,25 +1129,15 @@ const orderd_product = async (req, res) => {
         product: { $arrayElemAt: ["$product", 0] },
       },
     },
-   
   ]);
 
-  // productdetails.forEach((element) => {
-  //   element.Status = element.Status;
-  //   element.Date = element.Date;
-  //   element.Payment = element.Payment
-  //   element.Total = element.Total;
-  //   element.Quantity = element.Quantity;
-  //   element.productname = element.product.productname;
-  //   element.price = element.product.price;
-  //   element.offer = element.product.offer;
-  // });
+ 
 
   // console.log(productdetails);
   res.render("user/orderdproduct1", {
     addressdetails: addressdetails,
     productdetails: productdetails,
-    user:user[0]
+    user: user[0],
   });
 };
 
@@ -1160,7 +1164,7 @@ const order_status = async (req, res) => {
   const { Total, Status, Payment } = walletamout[0];
   let userwallet = await wallet.find({ UserId: userid });
   let date = new Date();
-  
+
   if (Payment == "razorpay" || Payment == "paypal" || Payment == "wallet") {
     let curentbalance = userwallet[0].Balance;
     let newbalance = curentbalance + Total;
@@ -1180,11 +1184,10 @@ const order_status = async (req, res) => {
 /* -------------------------------------------------------------------------- */
 const wish_list = async (req, res) => {
   let userid = req.session.user;
-  if(userid==null){
-    res.redirect('/login')
-  }else{
-
-    let user =await userdb.find({_id:userid})
+  if (userid == null) {
+    res.redirect("/login");
+  } else {
+    let user = await userdb.find({ _id: userid });
     //   console.log("asdfghjk");
     // await wish.find({UserId:userid}).then((data)=>{
     //   console.log(data);
@@ -1221,8 +1224,11 @@ const wish_list = async (req, res) => {
     ]);
     // console.log(wishlistdetails[0]);
     // console.log(wishlistdetails[1].name);
-  
-    res.render("user/wishlist", { wishlistdetails: wishlistdetails,user:user[0]});
+
+    res.render("user/wishlist", {
+      wishlistdetails: wishlistdetails,
+      user: user[0],
+    });
   }
 };
 
@@ -1238,41 +1244,64 @@ const wish_list_post = async (req, res) => {
   const newwishlist = { proid: Proid };
   let findinguser = await wish.find({ UserId: userid });
   // console.log(findinguser);
-  if (findinguser == "") {
-    //if no user new wishlist is adding
-    const wishlistschema = new wish({
-      UserId: userid,
-      Wishlist: [
-        {
-          proid: Proid,
-        },
-      ],
-    });
-    wishlistschema.save();
-  } else {
-    // if there is a existing user cheking the item is existing in the wishlist
-    const data = await wish.findOne({
-      $and: [
-        { UserId: userid },
-        { Wishlist: { $elemMatch: { proid: Proid } } },
-      ],
-    });
-    if (data) {
-      /// if it is exist remove from wishlist
-      await wish.updateOne(
-        { UserId: userid },
-        { $pull: { Wishlist: { proid: Proid } } }
-      );
+  if (userid) {
+    if (findinguser == "") {
+      //if no user new wishlist is adding
+      const wishlistschema = new wish({
+        UserId: userid,
+        Wishlist: [
+          {
+            proid: Proid,
+          },
+        ],
+      });
+      wishlistschema.save().then((result) => {
+        res.json({ result });
+      });
     } else {
-      // if it is not existing adding to wislist
-      await wish.updateOne(
-        { UserId: userid },
-        { $push: { Wishlist: newwishlist } }
-      );
-      res.redirect("/view_cart");
+      // if there is a existing user cheking the item is existing in the wishlist
+      const data = await wish.findOne({
+        $and: [
+          { UserId: userid },
+          { Wishlist: { $elemMatch: { proid: Proid } } },
+        ],
+      });
+      if (data) {
+        /// if it is exist remove from wishlist
+        await wish
+          .updateOne(
+            { UserId: userid },
+            { $pull: { Wishlist: { proid: Proid } } }
+          )
+          .then((removed) => {
+            res.json({ removed });
+          });
+      } else {
+        // if it is not existing adding to wislist
+        await wish
+          .updateOne({ UserId: userid }, { $push: { Wishlist: newwishlist } })
+          .then((added) => {
+            res.json({ added });
+          });
+      }
     }
+  } else {
+res.json({nouser:"nowishist"})
   }
 };
+/* ----------------------------- REMOVE_WISHLIST ---------------------------- */
+const remove_wishlist=async(req,res)=>{
+  let userid=req.session.user
+  let Proid=req.body.proid
+  await wish
+          .updateOne(
+            { UserId: userid },
+            { $pull: { Wishlist: { proid: Proid } } }
+          )
+          .then((wishlistremoved) => {
+            res.json({wishlistremoved });
+          });
+}
 
 /* -------------------------------------------------------------------------- */
 /*                                   RETURN                                   */
@@ -1335,4 +1364,5 @@ module.exports = {
   post_coupon,
   Return,
   paypal_verify_payment,
+  remove_wishlist
 };

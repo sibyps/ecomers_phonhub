@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="User/assets/css/skins/skin-demo-4.css">
   <link rel="stylesheet" href="User/assets/css/demos/demo-4.css">
   <title>phonehub</title>
-
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -77,8 +77,11 @@
 
                         <div class="flex-lg-grow-1 ms-3 text-center">
                           <p style="color: hsla(0, 2%, 10%, 0.833); "><strong><%= wish.name %> </strong></p><br>
+                           
+                           <p style="color: hsl(0, 0%, 0%); "><strong> ₹ <%= wish.price%></strong></p>
                            <p class="text-truncate d-inline-block" style="max-width: 250px;"><%= wish.Description %></p><br>
                            <a href="/cart_post/<%= wish._id %> " class="btn btn-primary">Add To Cart</a>
+                           
                         </div>
                       </div>
                     </td>
@@ -86,7 +89,12 @@
                    <div>
                     
                    </div>
-                    <td class="text-end" style="color: hsl(0, 0%, 0%); "><strong> ₹ <%= wish.price%></strong></td>
+                    <td class="text-end" ><a href="#" onclick="removewishlist('<%= wish._id %>')" class="btn-dark" style="padding:2px;" >x</a></td>
+                    <div>
+
+                       <td></td>
+                    </div>
+                   
                   </tr>
                   <% }) %>
 

@@ -4,6 +4,7 @@ const brand = require("../model/brand");
 const address = require("../model/address");
 const cart = require("../model/cart");
 const coupon = require("../model/coupon");
+const banner=require('../model/banner')
 let mongoose = require("mongoose");
 const fs = require("fs");
 const order = require("../model/order");
@@ -435,7 +436,23 @@ exports.post_login = (req, res) => {
     res.redirect("/admin/login");
   }
 };
+/* --------------------------------- BANNER --------------------------------- */
+exports.banner=(req,res)=>{
+  res.render('admin/banner')
+}
 
+exports.banner_post=async(req,res)=>{
+
+  let files=req.files
+ 
+  let file =files[0].filename
+
+const bannerschema=new banner({
+ image:file
+})
+await bannerschema.save()
+ res.redirect('/admin/banner')
+}
 /* --------------------------------- LOG OUT -------------------------------- */
 exports.log_out = (req, res) => {
   req.session.adminid = false;

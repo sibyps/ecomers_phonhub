@@ -99,15 +99,15 @@
     <div class="card mb-3" style="max-width: 540px;">
     <div class="row g-0">
       <div class="col-md-4">
-        <img src="/Products/<%=element.product.image[0]  %> " class="img-fluid rounded-start" alt="...">
+        <img src="Products/<%=element.product.image[0]%>" class="img-fluid rounded-start" alt="...">
       </div>
       <div class="col-md-8">
         <div class="card-body">
           <h5 class="card-title"><%= element.product.productname %> </h5>
-          <p class="card-text">Price: ₹<%= element.product.price %></p>
+          <p class="card-text">Price: ₹<%=Math.floor(element.product.price).toFixed(2) %></p>
           <p class="card-text">Qty: <%= element.Quantity %></p>
           <p class="card-text">Offer: <%= element.product.offer%>%<small class="text-muted"></small></p>
-          <p class="card-text">Total: ₹<%= ( (element.product.price-(element.product.price*element.product.offer/100))*element.Quantity).toFixed(2) %></p>
+          <p class="card-text">Total: ₹<%=Math.floor(( (element.product.price-(element.product.price*element.product.offer/100))*element.Quantity)).toFixed(2) %></p>
         </div>
       </div>
     </div>

@@ -37,6 +37,8 @@
   <link rel="stylesheet" href="User/assets/css/skins/skin-demo-4.css">
   <link rel="stylesheet" href="User/assets/css/demos/demo-4.css">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
 </head>
 
 <body>
@@ -62,7 +64,7 @@
                 <input type="text" name="couponcode" class="form-control" id="coupon" placeholder="Apply coupon">
 
                 <input type="text" hidden name="total" value="<%= Subtotal.toFixed(2)%>">
-                <button type="button" onclick="couponform()" class="btn-primary">Apply</button> <span id="couponinvalied" style="visibility:hidden; color:red;">Invalied coupon</span><span id="couponexpired" style="visibility:hidden; color:red;">expired</span><span id="couponamount" style="visibility:hidden; color:red;">You cant apply it</span>
+                <button type="button" onclick="couponform()" class="btn-primary">Apply</button> 
                 
               </form>
               <% } %>
@@ -119,17 +121,21 @@
                         </tr>
                         <% }) %>
 
-
-                        <tr>
-                          <td>Shipping:</td>
-                          <td>Free shipping</td>
-                        </tr>
+                        <tr class="summary-total">
+                          <td id="total"></td>
+                          <td id="befordiscount"></td>
+                         </tr>
+                        <tr class="summary-total">
+                          <td id="offer"></td>
+                          <td id="discount"></td>
+                         </tr>
                         <% if (Subtotal) { %>
                         <tr class="summary-total">
                           <td>Total:</td>
-                          <td id="totalprice" ><%= Subtotal.toFixed(2)%></td>
+                          <td id="totalprice" ><%=Math.floor( Subtotal).toFixed(2)%></td>
                            
                           <input type="hidden" id="totaldiscountprice" name="total" value="<%= Subtotal %>">
+                          
                         </tr><!-- End .summary-total -->
                        
                         <% } %>
@@ -495,7 +501,7 @@
   <script src="User/assets/js/jquery.hoverIntent.min.js"></script>
   <script src="User/assets/js/jquery.waypoints.min.js"></script>
   <script src="User/assets/js/superfish.min.js"></script>
-  <script src="User/assets/js/owl.carousel.min.js"></script>
+  <script src="User/assets/js/owl.carousel.min.js"></script> 
   <script src="User/assets/js/bootstrap-input-spinner.js"></script>
   <script src="User/assets/js/jquery.plugin.min.js"></script>
   <script src="User/assets/js/jquery.magnific-popup.min.js"></script>

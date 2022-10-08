@@ -119,7 +119,7 @@
                                   src="/Products/<%= cart.displaycart.image[1] %>"
                                   alt="Product image"
                                 />
-                              </a>
+                              </a> 
                             </figure>
 
                             <h3 class="product-title">
@@ -130,11 +130,11 @@
                           <!-- End .product -->
                         </td>
                         <td class="price-col">
-                          <del>₹ <%= cart.displaycart.price %> </del>
+                          <del>₹ <%=Math.floor(cart.displaycart.price).toFixed(2)  %> </del>
                         </td>
                         <td class="price-col">
                           ₹ <%=
-                          (cart.displaycart.price-(cart.displaycart.price*cart.displaycart.offer/100))
+                         Math.floor((cart.displaycart.price-(cart.displaycart.price*cart.displaycart.offer/100))).toFixed(2)
                           %>
                         </td>
                         <td class="quantity-col">
@@ -157,7 +157,7 @@
                         </td>
                         <td class="total-col">
                           <%=(
-                          (cart.displaycart.price-(cart.displaycart.price*cart.displaycart.offer/100))*cart.Quantity).toFixed(2)
+                            Math.floor((cart.displaycart.price-(cart.displaycart.price*cart.displaycart.offer/100))*cart.Quantity)).toFixed(2)
                           %>
                         </td>
                         <td class="remove-col">
@@ -190,14 +190,14 @@
 
                         <tr class="summary-subtotal">
                           <td>Subtotal:</td>
-                          <td><%= subtotal%></td>
+                          <td><%=Math.floor(subtotal).toFixed(2)%></td>
                         </tr>
                         <!-- End .summary-subtotal -->
                         <% } %> <% if (grandtotal) { %>
 
                         <tr class="summary-total">
                           <td>Total:</td>
-                          <td><%=grandtotal .toFixed(2)%></td>
+                          <td><%=Math.floor(grandtotal).toFixed(2)%></td>
                         </tr>
                         <!-- End .summary-total -->
                         <% } %>
@@ -833,7 +833,7 @@
     <!-- Main JS File -->
     <script src="/User/assets/js/main.js"></script>
     <script src="/User/assets/js/demos/demo-4.js"></script>
-    <script src="/User/ajax.js"></script>
+    <script src="User/ajax.js"></script>
   </body>
 
   <!-- molla/cart.html  22 Nov 2019 09:55:06 GMT -->

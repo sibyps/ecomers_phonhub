@@ -1,3 +1,5 @@
+const { response } = require("express");
+
 
 
 function changequantity(cartid, proid, userid, quantity, count) {
@@ -16,7 +18,7 @@ function changequantity(cartid, proid, userid, quantity, count) {
       if (response == false) {
         location.reload();
       } else {
-        location.reload();
+        location.reload(); 
       }
     },
   });
@@ -24,7 +26,7 @@ function changequantity(cartid, proid, userid, quantity, count) {
 
 
   $("#orderform").submit(function(e) {
-    alert("payment")
+    // alert("payment")
     e.preventDefault();
     $.ajax({
       url:"/order",
@@ -36,13 +38,14 @@ function changequantity(cartid, proid, userid, quantity, count) {
      }else if(response.wallet){
       location.href="/success"
      }else if(response.nowallet){
+      
       document.getElementById("walleterror").style.visibility="visible"
     }else if(response.paypal){
          location.href=response.link
     }
      else if(response.razorpay){
-      console.log(response);
-      alert("razorpay")
+      // console.log(response);
+      // alert("razorpay")
       razorpaypayment(response.order)
      }
       }
@@ -107,6 +110,23 @@ function wishlist(proid){
     proid
   },
   method:"post",
+  success:(response)=>{
+    if(response.result || response.added){
+      Swal.fire(
+        'Good job!',
+        'Added To Wishlist!',
+        'success'
+      )
+    }else if(response.removed){
+      Swal.fire(
+        'Good job!',
+        'Removed From Wishlist!',
+        'success'
+      )
+    }else if(response.nouser){
+      location.href="/login"
+    }
+  }
  })
 }
 
@@ -120,20 +140,125 @@ function couponform(){
     data: $("#couponform").serialize(),
    success:(response)=>{
     if(response.nocupon){
-      alert("no coupon")
-      document.getElementById("couponinvalied").style.visibility="visible"
+      // alert("no coupon")
+      Swal.fire(
+        'Invalid Coupon!',
+        '',
+        'error'
+      )
     }else if(response.expired){
-    alert("expired")
-    document.getElementById("couponexpired").style.visibility="visible"
+    // alert("expired")
+    Swal.fire(
+      'Expired Coupon!',
+      '',
+      'error'
+    )
+
     }else if(response.amount){
-      document.getElementById("couponamount").style.visibility="visible"
+      Swal.fire(
+        'You cant apply it!',
+        '',
+        'error'
+      )
+
     }else{
       let total=response.afterdiscount.toFixed(2)
-     
-     document.getElementById("totalprice").innerText=total
-     document.getElementById("totaldiscountprice").value=total
+     let discount=response.coupondiscount
+     let befordiscount=response.total
+     document.getElementById("totalprice").innerText=Math.floor(total).toFixed(2)
+     document.getElementById("totaldiscountprice").value=Math.floor(total).toFixed(2)
+     if(discount&&befordiscount){
+      Swal.fire(
+        'Coupon Added',
+    '',
+    'success'
+      )
+       document.getElementById("discount").innerText= discount+" % "
+       document.getElementById("offer").innerText= "Coupon Offer"
+       document.getElementById("total").innerText= "Sub Total"
+       document.getElementById("befordiscount").innerText=Math.floor(befordiscount).toFixed(2) 
+     }
     }
    }
   })
 }
 
+function hello(){
+
+  Swal.fire(
+    'Good job!',
+    'You clicked the button!',
+    'success'
+  )
+}
+
+
+
+function addtocart(proid) {
+
+  $.ajax({
+    url: "/cart_post",
+    data: {
+      proid: proid,
+     
+    },
+    method: "post",
+    success:function (response) {
+      if(response.result){
+
+        Swal.fire(
+          'Good job!',
+          'Add To Cart!',
+          'success'
+        )
+      }
+      else if(response.data){
+        location.href="/view_cart"
+      }else if(response.push){
+        Swal.fire(
+          'Good job!',
+          'Add To Cart!',
+          'success'
+        )
+      }else if(response.nouser){
+        location.href="/login"
+      }
+    }
+  });
+}
+
+function removewishlist(proid) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: "/remove_wishlist",
+        data: {
+          proid: proid,
+         
+        },
+        method: "delete",
+        success:async function (response) {
+          if(response.wishlistremoved){
+             
+           await Swal.fire(
+              'Deleted!',
+              'Your file has been deleted.',
+              'success'
+            )
+            window.location.reload()
+          }
+        }
+      });
+     
+    }
+  })
+ 
+}
